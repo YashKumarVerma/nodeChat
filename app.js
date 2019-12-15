@@ -5,26 +5,26 @@ const express=  require("express");
 const session= require("express-session");
 
 // to get data from post requests
-var bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 
 // start express app
 const app = express();
 
 // templating engine
-app.set("view engine", "hbs");
+app.set('view engine', 'hbs');
 
 // to get data fro post
 app.use(bodyParser.urlencoded());
 
 // allow content from public
-app.use(express.static("public"));
+app.use(express.static('public'));
 
 // configure sessions
-app.use(session({secret:"260f4f9d19a5c96aa79983876a3e3767"}));
+app.use(session({secret:'260f4f9d19a5c96aa79983876a3e3767'}));
 
 
 // defining routes
-app.get("/", function(req, res){
+app.get('/', function (req, res){
     
     // prepare data to send to template
     data = {

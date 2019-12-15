@@ -86,32 +86,33 @@
 
       //messageOutput
       //sendMessageButton
-      $(function(){
+      var socket = io.connect();
 
-         var socket = io.connect();
+      // get handles for items
+      var sendButton = $("#sendMessageButton");
+      var messageOut = $("#messageOutput");
+      var messageIn = $("#messageInput");
 
-         // get handles for items
-         var sendButton = $("#sendMessageButton");
-         var messageOut = $("#messageOutput");
-         var messageIn = $("#messageInput");
+      // send hello world beacon to the world!
+      socket.emit("newUser", {username:'{{username}}'});
 
-         // handle send event
-         sendButton.on("click", function(){
-               // send data to socket
-               socket.emit("newMessage", {messageString : messageIn.val() });
-         });
 
-         // check for new events
-         socket.on("newMessage", function(data){
-            // reset send i/o
-            messageIn.val("");
-            M.textareaAutoResize($("#messageInput"));
-
-            // append message
-            messageOut.append("<div><p><b>"+"Sender:"+"</b>:"+data.messageString+"</p></div>");
-         });
-
+      // handle send event
+      sendButton.on("click", function(){
+            // send data to socket
+            socket.emit("newMessage", {messageString : messageIn.val() });
       });
 
+
+
+      // check for new events
+      socket.on("newMessage", function(data){
+         // reset send i/o
+         messageIn.val("");
+         M.textareaAutoResize($("#messageInput"));
+
+         // append message
+         messageOut.append("<div><p><b>"+"Sender:"+"</b>:"+data.messageString+"</p></div>");
+      });
    </script>
 </html>
