@@ -25,8 +25,7 @@ app.use(session({secret:'260f4f9d19a5c96aa79983876a3e3767'}));
 
 // defining routes
 app.get('/', function (req, res){
-    
-    // prepare data to send to template
+// prepare data to send to template
     data = {
         title:"Chat",
         message:"my experiments with node"
@@ -50,17 +49,25 @@ app.post("/", function(req, res){
 server = app.listen(3000);
 
 // link the sockets to server
-const io = require("socket.io")(server)
+const io = require('socket.io')(server)
 
 
 // make server 'listen' for events
 io.on("connection", function(socket){
     console.log("New Node Connected");
-    
+
+
+    // to tell about new user to everyone
+    socket.on('newUser', function(data){
+        console.log("New User : " + data.username);
+        const timeStamp = Math.floor(Date.now() / 1000);
+        io.sockets.emit('newUser', {username:data.username, timestamp:timeStamp});
+    });
+
     // to 'push' more messages into server
-    socket.on("newMessage", function(data){
+    socket.on('newMessage', function(data){
         console.log("new message transmitted", data);
-        io.sockets.emit("newMessage", {messageString:data.messageString});
+        io.sockets.emit("newMessage", data);
     });
 });
 

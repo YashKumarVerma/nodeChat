@@ -100,7 +100,11 @@
       // handle send event
       sendButton.on("click", function(){
             // send data to socket
-            socket.emit("newMessage", {messageString : messageIn.val() });
+            const payLoad = {
+               messageString : messageIn.val(),
+               sender:'{{username}}'
+            };
+            socket.emit("newMessage", payLoad);
       });
 
 
@@ -112,7 +116,12 @@
          M.textareaAutoResize($("#messageInput"));
 
          // append message
-         messageOut.append("<div><p><b>"+"Sender:"+"</b>:"+data.messageString+"</p></div>");
+         messageOut.append("<div><p><b>"+data.sender+"</b>:"+data.messageString+"</p></div>");
+      });
+
+      // hear for new users on room
+      socket.on('newUser', function(data){
+         messageOut.append("<div><p>New User <b>"+data.username+"</b></p></div>");
       });
    </script>
 </html>
