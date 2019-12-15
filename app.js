@@ -37,7 +37,6 @@ app.get("/", function(req, res){
 });
 
 app.post("/", function(req, res){
-    console.log(req.body);
     data = {
         title:"nodeChat",
         message:"my experiments with node",
@@ -56,12 +55,12 @@ const io = require("socket.io")(server)
 
 // make server 'listen' for events
 io.on("connection", function(socket){
-    console.log("new node connected");
-
+    console.log("New Node Connected");
+    
     // to 'push' more messages into server
     socket.on("newMessage", function(data){
         console.log("new message transmitted", data);
-        socket.emit("newMessage", {messageString:data.messageString});
+        io.sockets.emit("newMessage", {messageString:data.messageString});
     });
-
 });
+
