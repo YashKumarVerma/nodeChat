@@ -7,6 +7,12 @@ const session= require("express-session");
 // to get data from post requests
 const bodyParser = require('body-parser');
 
+// load the url specific functions
+const unfolder = require("./includes/urlUnfold.js");
+
+// load the parser to get details about the docs
+const Meta  = require("html-metadata-parser");
+
 // start express app
 const app = express();
 
@@ -66,8 +72,48 @@ io.on("connection", function(socket){
 
     // to 'push' more messages into server
     socket.on('newMessage', function(data){
-        console.log("new message transmitted", data);
+
+        // by default, there's no payload and type is message
+        data.type = 'message';
+        data.payload = null;
+        
+        // emit the message as it is
         io.sockets.emit("newMessage", data);
+
+        
+        // if there's a url in the message string
+        if(unfolder.containsUrl(data.messageString)){
+            // set the type to url
+            data.type = 'url';
+
+            // get the first url that occurs in string
+            var urls = unfolder.getUrl(data.messageString);
+            var url = null;
+            
+            if(unfolder.isArray(urls)){
+                url = urls[0];
+            }
+            
+            // load the description of the url
+            var description = null;
+
+            // keep everythng inside to make it run one after the another
+            Meta.parser(url, function (err,result){           
+                description = result;
+            
+                // and send specific data through payload
+                data.payload = {
+                    url: url,
+                    description: description
+                };
+
+                // yell in the terminal about it
+                console.log("url hit us !");
+
+                // emit the thing
+                io.sockets.emit("newMessage", data);
+            });            
+        }
     });
 });
 

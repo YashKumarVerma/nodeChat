@@ -115,8 +115,23 @@
          messageIn.val("");
          M.textareaAutoResize($("#messageInput"));
 
-         // append message
-         messageOut.append("<div><p><b>"+data.sender+"</b>:"+data.messageString+"</p></div>");
+         // check if given message tppe is url or not
+         if(data.type=='url'){
+            // create a card regarding the URL
+            var str = "";
+            str += '<div class="card grey lighten-4">';
+            str += '<div class="card-content">';
+            str += '<span class="card-title"><a href="'+data.payload.description.og.url+'">'+data.payload.description.meta.title+'</a></span>';
+            str +=  '<p>'+data.payload.description.og.description+'</p>';
+            str += '</div>';
+            str +=  '</div>';
+            console.log(data.payload);
+            messageOut.append(str);
+         }
+         else if(data.type=='message'){
+            // append the emited message as normal text
+            messageOut.append("<div><p><b>"+data.sender+"</b>:"+data.messageString+"</p></div>");
+         }
       });
 
       // hear for new users on room
