@@ -2,10 +2,11 @@
   "name": "nodechat",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0",
-    "start": "nodemon app",
+    "server": "nodemon app",
+    "test": "ls",
+    "start": "node app.js",
     "build": "npm test"
   },
   "author": "",

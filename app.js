@@ -52,7 +52,7 @@ app.post("/", function(req, res){
 });
 
 // make server listen on 3000
-server = app.listen(3000);
+server = app.listen(process.env.PORT || 3000);
 
 // link the sockets to server
 const io = require('socket.io')(server)
