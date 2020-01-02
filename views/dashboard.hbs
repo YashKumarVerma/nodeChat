@@ -96,6 +96,30 @@
       // send hello world beacon to the world!
       socket.emit("newUser", {username:'{{username}}'});
 
+      // request all data from server
+      $.getJSON({
+        url:'./messageDump',
+        success: (data) => {
+          $(data).each((_,data) => {
+              // check if given message tppe is url or not
+              if(data.type=='url'){
+                  // create a card regarding the URL
+                  var str = "";
+                  str += '<div class="card grey lighten-4">';
+                  str += '<div class="card-content">';
+                  str += '<span class="card-title"><a href="'+data.og_url+'">'+data.og_title+'</a></span>';
+                  str +=  '<p>'+data.og_desc+'</p>';
+                  str += '</div>';
+                  str +=  '</div>';
+                  messageOut.append(str);
+              }
+              else if(data.type=='msg'){
+                  // append the emited message as normal text
+                  messageOut.append("<div><p><b>"+data.fromUser+"</b>:"+data.message+"</p></div>");
+              }
+          });
+        }
+      });
 
       // handle send event
       sendButton.on("click", function(){
@@ -110,7 +134,7 @@
 
 
       // check for new events
-      socket.on("newMessage", function(data){
+      socket.on("newMessage", function(data){ 
          // reset send i/o
          messageIn.val("");
          M.textareaAutoResize($("#messageInput"));
